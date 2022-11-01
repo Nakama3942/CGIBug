@@ -1,0 +1,51 @@
+URI,Summary
+/cgi-bin/cart32.exe,request cart32.exe/cart32clientlist
+/cgi-bin/classified.cgi,Check Phrack 55 for info by RFP
+/cgi-bin/download.cgi,v1 by Matt Wright; check info in Phrack 55 by RFP
+/cgi-bin/flexform.cgi,"Check Phrack 55 for info by RFP, allows to append info to writable files."
+/cgi-bin/flexform,"Check Phrack 55 for info by RFP, allows to append info to writable files."
+/cgi-bin/lwgate.cgi,"Check Phrack 55 for info by RFP, http://www.phrack.com/show.php?p=55&a=7"
+/cgi-bin/LWGate.cgi,"Check Phrack 55 for info by RFP, http://www.phrack.com/show.php?p=55&a=7"
+/cgi-bin/lwgate,Check Phrack 55 for info by RFP
+/cgi-bin/LWGate,Check Phrack 55 for info by RFP
+/cgi-bin/perlshop.cgi,v3.1 by ARPAnet.com; check info in Phrack 55 by RFP
+/cgi-bin/handler.cgi,Variation of Irix Handler? Has been seen from other CGI scanners.
+/cgi-bin/finger,"finger other users, may be other commands?"
+/cgi-bin/finger.pl,"finger other users, may be other commands?"
+/cgi-bin/formmail.cgi,"The remote CGI reveals its version number, which may aid attackers in finding vulnerabilities in the script."
+/cgi-bin/formmail,"The remote CGI reveals its version number, which may aid attackers in finding vulnerabilities in the script."
+/cgi-bin/get32.exe,This can allow attackers to execute arbitrary commands remotely.
+/cgi-bin/gm-authors.cgi,"GreyMatter 'password' file, that controls who can post. This contains login and password information and is installed mode 666 by default. See http://www.attrition.org/~jericho/works/security/greymatter.html for more info."
+/cgi-bin/guestbook/passwd,GuestBook r4 from lasource.r2.ru stores the admin password in a plain text file.
+/cgi-bin/horde/test.php?mode=phpinfo,"Horde allows phpinfo() to be run, which gives detailed system information."
+/cgi-bin/photo/protected/manage.cgi,My Photo Gallery management interface. May allow full access to photo galleries and more. Versions before 3.8 allowed anyone to view contents of any directory on systems.
+/cgi-bin/wrap.cgi,possible variation: comes with IRIX 6.2; allows to view directories
+/cgi-bin/wrap,comes with IRIX 6.2; allows to view directories
+/cgi-bin/formmail.pl,"Many versions of FormMail have remote vulnerabilities, including file access, information disclosure and email abuse. FormMail access should be restricted as much as possible or a more secure solution found."
+/cgi-bin/horde/test.php,Horde script reveals detailed system/Horde information.
+/cgi-bin/visadmin.exe,This CGI allows an attacker to crash the web server. Remove it from the CGI directory.
+/cgi-bin/html2chtml.cgi,"Html2Wml < 0.4.8 access local files via CGI, and more"
+/cgi-bin/html2wml.cgi,"Html2Wml < 0.4.8 access local files via CGI, and more"
+/cgi-bin/pollit/Poll_It_SSI_v2.0.cgi?data_dir=\etc\passwd%00,Poll_It_SSI_v2.0.cgi allows attackers to retrieve arbitrary files.
+/cgi-bin/echo.bat?&dir+c:\\,This batch file may allow attackers to execute remote commands.
+"/cgi-bin/excite;IFS=\$\"";/bin/cat /etc/passwd""",Excite software is vulnerable to command execution.
+/cgi-bin/ezshopper/loadpage.cgi?user_id=1&file=|cat%20/etc/passwd|,EZShopper loadpage CGI command execution
+/cgi-bin/guestbook.cgi,May allow attackers to execute commands as the web daemon.
+/cgi-bin/guestbook.pl,May allow attackers to execute commands as the web daemon.
+/cgi-bin/ss,Mediahouse Statistics Server may allow attackers to execute remote commands. Upgrade to the latest version or remove from the CGI directory.
+/html/cgi-bin/cgicso?query=AAA,This CGI allows attackers to execute remote commands.
+/cgi-bin/gH.cgi,Web backdoor by gH
+/cgi-bin/gm-cplog.cgi,GreyMatter log file defaults to mode 666 and contains login and passwords used to update the GM site. See http://www.attrition.org/~jericho/works/security/greymatter.html for more info.
+/cgi-bin/gm.cgi,"GreyMatter blogger may reveal user IDs/passwords through a gmrightclick-######.reg files (# are numbers), possibly in /archive or other archive location. See http://www.attrition.org/~jericho/works/security/greymatter.html for more info."
+/cgi-bin/AT-admin.cgi,Admin interface...
+/cgi-bin/auth_data/auth_user_file.txt,The DCShop installation allows credit card numbers to be viewed remotely. See dcscripts.com for fix information.
+/cgi-bin/awstats.pl,AWStats logfile analyzer.
+/cgi-bin/awstats/awstats.pl,Free realtime logfile analyzer for advanced web statistics. Should be protected.
+/cgi-bin/blog/mt.cfg,Movable Type configuration file found. Should not be available remotely.
+/cgi-bin/cart.pl?db=',Dansie Shopping Cart reveals the full path to the CGI directory.
+/cgi-bin/cart.pl?db=',Dansie Shopping Cart reveals the full path to the CGI directory.
+/cgi-bin/htsearch?config=foofighter&restrict=&exclude=&method=and&format=builtin-long&sort=score&words=,"The ht://Dig install may reveal the path to its configuration files, revealing sensitive information about the server."
+/cgi-bin/mt-static/mt-check.cgi,"Movable Type weblog diagnostic script found. Reveals docroot path, operating system, Perl version, and modules."
+/cgi-bin/mt/mt-check.cgi,"Movable Type weblog diagnostic script found. Reveals docroot path, operating system, Perl version, and modules."
+/cgi-bin/banner.cgi,This CGI may allow attackers to read any file on the system.
+/cgi-bin/bannereditor.cgi,This CGI may allow attackers to read any file on the system.
