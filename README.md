@@ -1,4 +1,4 @@
-# ScanPort
+# CGIBug
 The program is a solution to the task from the third laboratory on the subject "Network Information Technologies".
 
 ## Overview
