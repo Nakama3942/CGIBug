@@ -1,3 +1,17 @@
+#  Copyright © 2022 Kalynovsky Valentin. All rights reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import csv
 import subprocess
 import sys
@@ -19,6 +33,7 @@ class CGIBug(QMainWindow, Ui_CGIBug):
         # It's a declaration of other windows of the program
         self.dialog = None
 
+        # It's a tracking of button clicks in the window
         self.actionOpenDB.triggered.connect(self.openDB)
         self.actionStartScanning.triggered.connect(self.startScanning)
         self.actionClearConsole.triggered.connect(self.clearConsole)
@@ -28,11 +43,11 @@ class CGIBug(QMainWindow, Ui_CGIBug):
 
     def openDB(self):
         """
-        The function opens a dialog box and loads a file called cgi_list.txt into the dialog box
+        It opens a dialog window, shows it, and loads data from a file
         """
         self.dialog = DialogWindow()
         self.dialog.show()
-        self.dialog.loadData("cgi_list.txt")  # cgi.csv"cgi_list.txt"
+        self.dialog.loadData("cgi_list.txt")
 
     def startScanning(self):
         """
@@ -50,4 +65,8 @@ class CGIBug(QMainWindow, Ui_CGIBug):
         self.getTextEdit().clear()
 
     def getTextEdit(self):
+        """
+        It returns the textEdit object
+        :return: The textEdit object is being returned.
+        """
         return self.textEdit

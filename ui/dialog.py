@@ -37,74 +37,57 @@ class DialogWindow(QDialog, Ui_Dialog):
 
     def importData(self):
         """
-        It's opening a file dialog and getting the path of the file that the user selected. It's importing the data from the
-        file into the tableView.
+        It opens a file dialog, gets the file path, opens the file, reads the file, and then appends the data to the table
+        view
         """
-        print("importData")
-        # It's opening a file dialog and getting the path of the file that the user selected.
         path, _filter = QFileDialog.getOpenFileName(self, 'Import File', '', 'CSV(*.csv)')
         filename = path
-        # It's importing the data from the file into the tableView.
         if filename != "":
             with open(filename, "r") as fileInput:
-                # It's reading the file and adding the data to the tableView.
                 for row in csv.reader(fileInput):
                     items = [
                         QtGui.QStandardItem(field)
                         for field in row
                     ]
-                    # It's adding a row to the tableView.
                     self.tableView.model().appendRow(items)
 
     def saveData(self):
         """
-        It's iterating through the rows and columns of the tableView and
-        writing the data to a csv file.
+        It opens a file dialog to get a file name, then opens a file with that name, then writes the contents of the table
+        to the file
         """
-        print("save")
         filename = self.filePath.text()
-        # It's opening a file dialog and getting the path of the file that the user selected.
         if filename == "":
             path, _filter = QFileDialog.getSaveFileName(self, 'Save File', '', 'CSV(*.csv)')
             filename = path
-        # It's opening the file and creating a writer object.
         if filename != "":
             self.filePath.setText(filename)
             csvf = open(filename, 'w', newline='')
             writer = csv.writer(csvf, csv.excel)
-            # It's iterating through the rows of the tableView and adding the data to the rowdata list.
             for row in range(self.tableView.model().rowCount()):
                 rowdata = []
-                # It's iterating through the columns of the tableView and adding the data to the rowdata list.
                 for column in range(self.tableView.model().columnCount()):
                     item = self.tableView.model().item(row, column)
-                    # It's checking if the item is not None. If the item is not None, it's adding the item to the rowdata
-                    # list.
                     if item is not None:
                         rowdata.append(item.text().strip())
                 writer.writerow(rowdata)
 
-    def deleteRow(self, filename):
+    def deleteRow(self):
         """
-        It removes all the rows from the tableView
-        :param filename: the name of the file to be deleted
+        It removes all the rows from the table view
         """
-        print("del")
         self.tableView.model().removeRows(0, self.tableView.model().rowCount())
 
     def loadData(self, filename):
         """
-        It's iterating through the rows of the file and adding the data to the tableView
-        :param filename: The name of the file to open
+        It opens the file, reads the file, and then appends the data to the tableView
+
+        :param filename: The name of the file to load
         """
         with open(filename, "r") as fileInput:
-            # It's iterating through the rows of the file and adding the data to the tableView.
             for row in csv.reader(fileInput):
                 items = [
                     QtGui.QStandardItem(field.strip())
                     for field in row
                 ]
-                # for field in row
-                # for i in range(len(row)) if i > 2
-                # if row[3].lower().find("cgi") > -1:
                 self.tableView.model().appendRow(items)

